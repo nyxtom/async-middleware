@@ -355,14 +355,16 @@ mod tests {
     #[async_std::test]
     async fn test_piper_tuple() {
         pipe((producer, log_nums));
-        (producer, log_nums).pipe();
         pipe((producer, stringer, logger));
-        (producer, stringer, logger).pipe();
         pipe((producer, multipler, stringer, logger));
-        (producer, multipler, stringer, logger).pipe();
         pipe((multipler, multipler, multipler));
-        (multipler, multipler, multipler).pipe();
         pipe((multipler, multipler, stringer));
+
+        // alternative syntax
+        (producer, log_nums).pipe();
+        (producer, stringer, logger).pipe();
+        (producer, multipler, stringer, logger).pipe();
+        (multipler, multipler, multipler).pipe();
         (multipler, multipler, stringer).pipe();
 
         // pipe different pipes
@@ -371,6 +373,31 @@ mod tests {
         let m = pipe((m, stringer)); // 3072
 
         assert_eq!(String::from("3072"), m.call(()).await);
+    }
+
+    #[async_std::test]
+    async fn test_piper_tuple_inputs() {
+        let m = (multipler, multipler, stringer).pipe();
+        assert_eq!(String::from("1024"), m.call(1).await);
+        assert_eq!(String::from("2048"), m.call(2).await);
+        assert_eq!(String::from("3072"), m.call(3).await);
+    }
+
+    // lack of support for variadics at the moment for the initial source
+    // downstream functions will only be able to accept a single value
+    // as a future's output can only be a single return value
+    // input should however be flexible to be variadic here though
+    async fn multi(a: i32, b: i32) -> i32 {
+        a + b
+    }
+
+    #[cfg(todo)]
+    #[async_std::test]
+    async fn test_piper_multiple_tuple_inputs() {
+        let m = (multi, multipler, stringer).pipe();
+        assert_eq!(String::from("1024"), m.call(1).await);
+        assert_eq!(String::from("2048"), m.call(2).await);
+        assert_eq!(String::from("3072"), m.call(3).await);
     }
 
     #[test]

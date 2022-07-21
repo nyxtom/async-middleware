@@ -56,6 +56,14 @@ fn test_piper_tuple() {
     assert_eq!(String::from("3072"), m.call(()).await);
 }
 
+#[async_std::test]
+async fn test_piper_tuple_inputs() {
+    let m = (multipler, multipler, stringer).pipe();
+    assert_eq!(String::from("1024"), m.call(1).await);
+    assert_eq!(String::from("2048"), m.call(2).await);
+    assert_eq!(String::from("3072"), m.call(3).await);
+}
+
 #[test]
 fn test_convert_transform() {
     convert(multipler, stringer);
