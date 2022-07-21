@@ -47,5 +47,10 @@ fn test_piper_tuple() {
     (producer, multipler, stringer, logger).pipe();
     (multipler, multipler, multipler).pipe();
     (multipler, multipler, stringer).pipe();
+
+    // pipe different pipes
+    let m = (producer, multipler).pipe();
+    let m = (m, multipler).pipe();
+    pipe((m, stringer));
 }
 ```
