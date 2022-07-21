@@ -10,7 +10,8 @@ Provides a way to pipe a number of async middleware functions together that is t
 ## Examples
 
 ```rust
-use async_monad::*;
+// import * as this provides all the trait implementations by default
+use async_middleware::*;
 
 async fn producer() -> i32 {
     3
