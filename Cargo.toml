@@ -1,11 +1,11 @@
 [package]
 name = "async-middleware"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 authors = ["Thomas Holloway <nyxtom@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-description = "Simple async middleware functions using tuples as transforms"
+description = "Simple async monad(ish) middleware in Rust using tuples and async trait transforms"
 homepage = "https://github.com/nyxtom/async-middleware"
 repository = "https://github.com/nyxtom/async-middleware"
 keywords = ["async", "monad", "traits", "middleware", "futures"]
