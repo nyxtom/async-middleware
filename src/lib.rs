@@ -119,13 +119,26 @@ where
     }
 }
 
+#[async_trait]
+impl<T, Args, I, O> Transform<(I, O), I, O> for Pied<T, Args, I, O>
+where
+    T: Send + Sync + 'static,
+    Args: Send + Sync + 'static,
+    I: Send + Sync + 'static,
+    O: Send + Sync + 'static,
+{
+    async fn transform(&self, input: I) -> O {
+        self.middleware.call(input).await
+    }
+}
+
 /// Common pipe trait used to create implementations for each tuple
 pub trait Piper<T, Args, I, O> {
     fn pipe(self) -> Pied<T, Args, I, O>;
 }
 
 /// Helper utility to execute the .pipe on a Pipe implementation and returns a middleware
-pub fn pipe<T, Args, I, O>(f: impl Piper<T, Args, I, O>) -> impl Middleware<I, O>
+pub fn pipe<T, Args, I, O>(f: impl Piper<T, Args, I, O>) -> Pied<T, Args, I, O>
 where
     T: Send + Sync + 'static,
     Args: Send + Sync + 'static,
@@ -351,6 +364,11 @@ mod tests {
         (multipler, multipler, multipler).pipe();
         pipe((multipler, multipler, stringer));
         (multipler, multipler, stringer).pipe();
+
+        // pipe different pipes
+        let m = (producer, multipler).pipe();
+        let m = (m, multipler).pipe();
+        pipe((m, stringer));
     }
 
     #[test]
