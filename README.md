@@ -49,9 +49,9 @@ fn test_piper_tuple() {
     (multipler, multipler, stringer).pipe();
 
     // pipe different pipes
-    let m = (producer, multipler).pipe(); // 3 * 32 = 96
-    let m = (m, multipler).pipe(); // * 32 = 3072
-    let m = pipe((m, stringer)); // 3072
+    let m = (producer, multipler).pipe();
+    let m = (m, multipler).pipe();
+    let m = pipe((m, stringer));
 
     assert_eq!(String::from("3072"), m.call(()).await);
 }
