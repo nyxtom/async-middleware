@@ -52,5 +52,9 @@ fn test_piper_tuple() {
     let m = (producer, multipler).pipe();
     let m = (m, multipler).pipe();
     pipe((m, stringer));
+
+    async {
+
+    }
 }
 ```

@@ -14,3 +14,6 @@ keywords = ["async", "monad", "traits", "middleware", "futures"]
 
 [dependencies]
 async-trait = "0.1.56"
+
+[dev-dependencies]
+async-std = { version = "1.12.0", features = ["attributes"] }
