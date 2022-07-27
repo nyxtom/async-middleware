@@ -344,6 +344,10 @@ mod tests {
         i.to_string()
     }
 
+    async fn gen<T: std::fmt::Display>(value: T) -> String {
+        format!("foo {}", value)
+    }
+
     async fn logger(s: String) {
         println!("{}", s);
     }
@@ -357,7 +361,7 @@ mod tests {
         pipe((producer, log_nums));
         pipe((producer, stringer, logger));
         pipe((producer, multipler, stringer, logger));
-        pipe((multipler, multipler, multipler));
+        pipe((multipler, multipler, multipler, gen));
         pipe((multipler, multipler, stringer));
 
         // alternative syntax
@@ -373,6 +377,10 @@ mod tests {
         let m = pipe((m, stringer)); // 3072
 
         assert_eq!(String::from("3072"), m.call(()).await);
+
+        // pipe with generics
+        let m = (producer, multipler, multipler, gen).pipe();
+        assert_eq!(String::from("foo 3072"), m.call(()).await);
     }
 
     #[async_std::test]
